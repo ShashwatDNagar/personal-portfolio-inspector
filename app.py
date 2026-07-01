@@ -50,6 +50,7 @@ from lib.tax_planning import analyze_tax_situation, tax_loss_pairs
 from lib.wash_sales import detect_wash_sale_risk
 from lib.finviz_screener import FINVIZ_SCREENS, run_live_discovery
 from lib.etf_mining import mine_etf_holdings
+from lib.benchmark import compute_stock_picking_scorecard
 
 st.set_page_config(page_title="Portfolio Dashboard", layout="wide", page_icon="🏛")
 
@@ -1640,6 +1641,61 @@ with tab_research:
 
     stock_signals = signals_df[signals_df["holding_type"].apply(lambda t: not _is_fund_check(t))].copy()
     fund_signals = signals_df[signals_df["holding_type"].apply(_is_fund_check)].copy()
+
+    # ── Stock-Picking Scorecard ──
+    st.subheader("Stock-Picking Scorecard: Are You Beating the Index?")
+    st.caption(
+        "Money-weighted return on your individual stock picks vs. the index funds & ETFs "
+        "you already hold (FNILX, FXAIX, FSKAX, etc), using your real cost basis. This isn't "
+        "perfectly time-matched — you didn't buy every stock and fund on the same day — so treat "
+        "it as an honest gut-check, not a precise alpha calculation."
+    )
+
+    scorecard = compute_stock_picking_scorecard(df)
+    stocks_b, funds_b = scorecard["stocks"], scorecard["funds"]
+
+    if stocks_b["count"] and funds_b["count"]:
+        sc_cols = st.columns(2)
+        sc_cols[0].metric(
+            f"Your Stock Picks ({stocks_b['count']})",
+            f"{stocks_b['gain_pct']:+.1f}%",
+            f"${stocks_b['gain_dollar']:+,.0f} on ${stocks_b['cost_basis']:,.0f} invested",
+        )
+        sc_cols[1].metric(
+            f"Your Index Funds & ETFs ({funds_b['count']})",
+            f"{funds_b['gain_pct']:+.1f}%",
+            f"${funds_b['gain_dollar']:+,.0f} on ${funds_b['cost_basis']:,.0f} invested",
+        )
+
+        gap = abs(stocks_b["gain_pct"] - funds_b["gain_pct"])
+        if scorecard["beating_index"]:
+            st.success(
+                f"🟢 Your stock picks are **beating** your index funds by {gap:.1f} points. "
+                f"If that \\${stocks_b['cost_basis']:,.0f} had gone into your index funds instead, "
+                f"you'd have \\${scorecard['hypothetical_value_if_indexed']:,.0f} instead of "
+                f"\\${stocks_b['current_value']:,.0f} — **\\${scorecard['dollar_vs_indexing']:,.0f} ahead** of just indexing."
+            )
+        else:
+            st.warning(
+                f"🔴 Your stock picks are **lagging** your index funds by {gap:.1f} points. "
+                f"If that \\${stocks_b['cost_basis']:,.0f} had gone into your index funds instead, "
+                f"you'd have \\${scorecard['hypothetical_value_if_indexed']:,.0f} instead of "
+                f"\\${stocks_b['current_value']:,.0f} — **\\${-scorecard['dollar_vs_indexing']:,.0f} behind** just indexing."
+            )
+
+        wcol, lcol = st.columns(2)
+        with wcol:
+            st.markdown("**Best contributors**")
+            for w in scorecard["top_winners"]:
+                st.markdown(f"- {w['symbol']}: +${w['gain_loss_dollar']:,.0f} ({w['gain_loss_pct']:+.0f}%)")
+        with lcol:
+            st.markdown("**Worst contributors**")
+            for l in scorecard["top_losers"]:
+                st.markdown(f"- {l['symbol']}: ${l['gain_loss_dollar']:,.0f} ({l['gain_loss_pct']:+.0f}%)")
+    else:
+        st.info("Need both individual stocks and index funds/ETFs with cost basis to compare.")
+
+    st.divider()
 
     # ── Individual Stocks ──
     st.subheader("Individual Stocks")

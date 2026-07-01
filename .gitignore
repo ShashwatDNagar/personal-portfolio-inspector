@@ -15,5 +15,8 @@ local_config.json
 __pycache__/
 *.pyc
 
+# Runner script log
+stock-plan.log
+
 # Local-only Claude Code settings
 .claude/settings.local.json
