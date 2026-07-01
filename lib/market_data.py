@@ -22,11 +22,18 @@ def _fetch_batch(symbols_tuple: tuple[str, ...]) -> dict:
                 or 0
             )
 
+            # yfinance's `dividendYield` is reported as a percentage number (e.g. 2.61
+            # meaning 2.61%), not a decimal fraction — normalize here since every
+            # consumer of this field (display formatting, screener thresholds) expects
+            # a fraction like 0.0261.
+            raw_dividend_yield = info.get("dividendYield")
+            dividend_yield = raw_dividend_yield / 100 if raw_dividend_yield is not None else None
+
             results[sym] = {
                 "price": price,
                 "pe_ratio": info.get("trailingPE"),
                 "forward_pe": info.get("forwardPE"),
-                "dividend_yield": info.get("dividendYield"),
+                "dividend_yield": dividend_yield,
                 "fifty_two_week_low": info.get("fiftyTwoWeekLow"),
                 "fifty_two_week_high": info.get("fiftyTwoWeekHigh"),
                 "market_cap": info.get("marketCap"),

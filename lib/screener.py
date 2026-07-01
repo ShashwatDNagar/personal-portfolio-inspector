@@ -105,7 +105,9 @@ def fetch_screener_data(symbols: list[str], progress_callback=None) -> pd.DataFr
                     "peg_ratio": info.get("pegRatio"),
                     "pb_ratio": info.get("priceToBook"),
                     "ps_ratio": info.get("priceToSalesTrailing12Months"),
-                    "dividend_yield": info.get("dividendYield") or 0,
+                    # yfinance reports this as a percentage number (2.61 = 2.61%), not a
+                    # fraction — normalize to match the 0.03/0.015-style thresholds below.
+                    "dividend_yield": (info.get("dividendYield") or 0) / 100,
                     "payout_ratio": info.get("payoutRatio"),
                     "eps_growth_qoq": eps_growth,
                     "revenue_growth": rev_growth,
