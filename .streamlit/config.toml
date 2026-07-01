@@ -1,0 +1,57 @@
+[theme]
+base = "dark"
+
+# ── Vault / Private Bank palette ──────────────────────────────────────────
+primaryColor = "#B08D57"                # brushed gold — buttons, active tab, slider
+backgroundColor = "#10201A"             # deep forest green-black
+secondaryBackgroundColor = "#17281F"    # panel/sidebar bg, one shade up
+textColor = "#E9E4D8"                   # ivory
+
+greenColor = "#7FBF8F"
+redColor = "#C4746A"
+yellowColor = "#C9A24B"
+blueColor = "#6F91A6"
+violetColor = "#8F5E7A"
+orangeColor = "#B8825A"
+grayColor = "#7A8A80"
+
+linkColor = "#C9A24B"
+linkUnderline = false
+
+codeTextColor = "#D4B876"
+codeBackgroundColor = "#0C1712"
+
+borderColor = "#33443A"
+dataframeBorderColor = "#33443A"
+dataframeHeaderBackgroundColor = "#1D3226"
+
+showWidgetBorder = true
+showSidebarBorder = true
+
+baseRadius = "small"
+buttonRadius = "small"
+
+# ── Type ───────────────────────────────────────────────────────────────────
+font = "Public Sans:https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&display=swap"
+headingFont = "Fraunces:https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&display=swap"
+codeFont = "IBM Plex Mono:https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+
+baseFontSize = 16
+headingFontWeights = [600, 500, 500, 500, 500, 500]
+
+metricValueFontSize = "2.25rem"
+metricValueFontWeight = 500
+
+# ── Charts ───────────────────────────────────────────────────────────────
+chartCategoricalColors = [
+    "#B08D57", "#7FBF8F", "#C4746A", "#6F91A6",
+    "#A67F9E", "#8FA66F", "#C9A24B", "#5E7A6E",
+]
+chartSequentialColors = [
+    "#10201A", "#1A2E24", "#26362B", "#33443A",
+    "#5E7A6E", "#7FA681", "#B08D57", "#C9A24B",
+]
+chartDivergingColors = [
+    "#7A3D36", "#A6564A", "#4A2E29", "#1A2E24",
+    "#26362B", "#4E6B54", "#7FBF8F",
+]

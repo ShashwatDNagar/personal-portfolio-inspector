@@ -1,0 +1,19 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Personal data — never commit
+Data/*.csv
+snapshots/*.json
+local_config.json
+.streamlit/secrets.toml
+
+# OS / editor
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Local-only Claude Code settings
+.claude/settings.local.json
